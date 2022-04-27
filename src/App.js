@@ -3,6 +3,7 @@ import './App.css';
 import React, { Component } from 'react'
 import Navbar from './components/navbar';
 import News from './components/News';
+// import './components/style.css'
 
 export default class App extends Component {
 
