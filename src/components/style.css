@@ -1,2 +1,9 @@
-h5.card-title {color: red;}
+/* h5.card-title {;} */
 img.card-img-top {height: 220px;object-fit: cover;}
+.btn_flex{
+    display: flex;
+    justify-content: space-between;
+}
+.card-text{
+    min-height: 80px;
+}

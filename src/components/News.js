@@ -3,7 +3,7 @@ import NewsItem from './NewsItem'
 import './style.css'
 
 export class News extends Component {
-  article=[
+  articles=[
     {
         "source": {
             "id": "bbc-sport",
@@ -47,24 +47,65 @@ export class News extends Component {
 constructor(){
   super();
   this.state={
-    article:this.article,
-    loading:false
+    articles:this.articles,
+    loading:false,
+    page:1
   }
   
 }
+async componentDidMount(){
+ let url="https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=c2cffc376cf841fda2e39392378a1c2e&page=1"
+ let data=await fetch(url)
+ let parseData=await data.json();
+//  console.log(parseData)
+this.setState({articles:parseData.articles})
+}
+
+prevClick= async ()=>{
+  let url=`https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=c2cffc376cf841fda2e39392378a1c2e&page=${this.state.page-1}`
+  let data=await fetch(url)
+  let parseData=await data.json();
+  // console.log(parseData)
+ this.setState({articles:parseData.articles})
+ this.setState({
+   page:this.state.page-1
+ })
+}
+nextClick= async ()=>{
+  let url=`https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=c2cffc376cf841fda2e39392378a1c2e&page=${this.state.page+1}`
+  let data=await fetch(url)
+  let parseData=await data.json();
+  console.log(parseData)
+ this.setState({articles:parseData.articles})
+ this.setState({
+   page:this.state.page+1
+ })
+}
   render() {
-    return (
+       return (
       <div className='container my-3'>
           <h3>Welcome To news Monkey</h3>
           <div className="row ">
-          {this.state.article.map((element)=>{
-            let content=element.content.slice(0,80)+"..."
-            return    <div className="col-md-4" key={element.url}>
-            <NewsItem   title={element.title} description={content} imgUrl={element.urlToImage} newsurl={element.url}/>
-            </div>
+            {
+            this.state.articles.map(element=>{
+              return  <div className="col-md-4 my-3" key={element.url}
+              
+              
+              >
+              <NewsItem   title={element.title.substring(0,45)} description={element.content?element.content.substring(0,80):("Demo Demo demo demo demo Demo Demo demo demo demo Demo Demo demo demo demo Demo Demo demo demo demo Demo Demo demo demo demo").substring(0,80)} imgUrl={element.urlToImage?element.urlToImage:"https://static01.nyt.com/images/2022/05/06/multimedia/06DC-Waller/06DC-Waller-facebookJumbo.jpg"} newsurl={element.url}/>
+              </div>
             })}
+          {/* {this.state.articles.map((element)=>{
+            let content=element.content.slice(0,100)
+            return    <div className="col-md-4 my-3" key={element.url}>
+            <NewsItem   title={element.title.substring(0,45)} description={content} imgUrl={element.urlToImage} newsurl={element.url}/>
+            </div>
+            })} */}
           </div>
-    
+            <div className="btn_flex">
+              <button disabled={this.state.page<=1} type='button' className='btn btn-dark' onClick={this.prevClick}>&larr; Previous</button>
+              <button type='button' className='btn btn-dark' onClick={this.nextClick}>&rarr; Next</button>
+            </div>
       </div>
     )
   }
