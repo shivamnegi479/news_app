@@ -54,32 +54,37 @@ constructor(){
   
 }
 async componentDidMount(){
- let url="https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=c2cffc376cf841fda2e39392378a1c2e&page=1"
+  
+ let url="https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=c2cffc376cf841fda2e39392378a1c2e&page=1&pageSize=20"
  let data=await fetch(url)
  let parseData=await data.json();
 //  console.log(parseData)
-this.setState({articles:parseData.articles})
+this.setState({articles:parseData.articles,totalResults:parseData.totalResults})
 }
 
 prevClick= async ()=>{
-  let url=`https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=c2cffc376cf841fda2e39392378a1c2e&page=${this.state.page-1}`
+  let url=`https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=c2cffc376cf841fda2e39392378a1c2e&page=${this.state.page-1}&pageSize=20`
   let data=await fetch(url)
   let parseData=await data.json();
-  // console.log(parseData)
- this.setState({articles:parseData.articles})
  this.setState({
+   articles:parseData.articles,
    page:this.state.page-1
  })
 }
 nextClick= async ()=>{
-  let url=`https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=c2cffc376cf841fda2e39392378a1c2e&page=${this.state.page+1}`
-  let data=await fetch(url)
-  let parseData=await data.json();
-  console.log(parseData)
- this.setState({articles:parseData.articles})
- this.setState({
-   page:this.state.page+1
+  if(this.state.page+1>Math.ceil(this.state.totalResults/20)){
+
+  }
+  else{  
+      let url=`https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=c2cffc376cf841fda2e39392378a1c2e&page=${this.state.page+1}&pageSize=20`
+      let data=await fetch(url)
+      let parseData=await data.json();
+      // console.log(parseData)
+      this.setState({
+      page:this.state.page+1,
+      articles:parseData.articles
  })
+}
 }
   render() {
        return (
@@ -88,23 +93,18 @@ nextClick= async ()=>{
           <div className="row ">
             {
             this.state.articles.map(element=>{
-              return  <div className="col-md-4 my-3" key={element.url}
+              return  <div className="col-md-3 my-3" key={element.url}
               
               
               >
-              <NewsItem   title={element.title.substring(0,45)} description={element.content?element.content.substring(0,80):("Demo Demo demo demo demo Demo Demo demo demo demo Demo Demo demo demo demo Demo Demo demo demo demo Demo Demo demo demo demo").substring(0,80)} imgUrl={element.urlToImage?element.urlToImage:"https://static01.nyt.com/images/2022/05/06/multimedia/06DC-Waller/06DC-Waller-facebookJumbo.jpg"} newsurl={element.url}/>
+              <NewsItem   title={element.title.substring(0,30)} description={element.content?element.content.substring(0,80):("Demo Demo demo demo demo Demo Demo demo demo demo Demo Demo demo demo demo Demo Demo demo demo demo Demo Demo demo demo demo").substring(0,80)} imgUrl={element.urlToImage?element.urlToImage:"https://static01.nyt.com/images/2022/05/06/multimedia/06DC-Waller/06DC-Waller-facebookJumbo.jpg"} newsurl={element.url}/>
               </div>
             })}
-          {/* {this.state.articles.map((element)=>{
-            let content=element.content.slice(0,100)
-            return    <div className="col-md-4 my-3" key={element.url}>
-            <NewsItem   title={element.title.substring(0,45)} description={content} imgUrl={element.urlToImage} newsurl={element.url}/>
-            </div>
-            })} */}
+       
           </div>
             <div className="btn_flex">
               <button disabled={this.state.page<=1} type='button' className='btn btn-dark' onClick={this.prevClick}>&larr; Previous</button>
-              <button type='button' className='btn btn-dark' onClick={this.nextClick}>&rarr; Next</button>
+              <button disabled={this.state.page+1>Math.ceil(this.state.totalResults/20)} type='button' className='btn btn-dark' onClick={this.nextClick}>&rarr; Next</button>
             </div>
       </div>
     )
