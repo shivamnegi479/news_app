@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import NewsItem from './NewsItem'
+import Spinner from './Spinner';
 import './style.css'
 
 export class News extends Component {
@@ -19,8 +20,8 @@ export class News extends Component {
     },
     {
         "source": {
-            "id": "espn-cric-info",
-            "name": "ESPN Cric Info"
+          "id": "espn-cric-info",
+          "name": "ESPN Cric Info"
         },
         "author": null,
         "title": "PCB hands Umar Akmal three-year ban from all cricket | ESPNcricinfo.com",
@@ -32,9 +33,9 @@ export class News extends Component {
     },
     {
         "source": {
-            "id": "espn-cric-info",
+          "id": "espn-cric-info",
             "name": "ESPN Cric Info"
-        },
+          },
         "author": null,
         "title": "What we learned from watching the 1992 World Cup final in full again | ESPNcricinfo.com",
         "description": "Wides, lbw calls, swing - plenty of things were different in white-ball cricket back then | ESPNcricinfo.com",
@@ -43,56 +44,70 @@ export class News extends Component {
         "publishedAt": "2020-03-30T15:26:05Z",
         "content": "Last week, we at ESPNcricinfo did something we have been thinking of doing for eight years now: pretend-live ball-by-ball commentary for a classic cricket match. We knew the result, yes, but we tried… [+6823 chars]"
     }
-]
-constructor(){
-  super();
-  this.state={
-    articles:this.articles,
-    loading:false,
-    page:1
+  ]
+  constructor(){
+    super();
+
+    this.state={
+      articles:this.articles,
+      loading:false,
+      page:1
+    }
+    
   }
-  
-}
-async componentDidMount(){
-  
- let url="https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=c2cffc376cf841fda2e39392378a1c2e&page=1&pageSize=20"
+  async componentDidMount(){
+    
+ let url=`https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=c2cffc376cf841fda2e39392378a1c2e&page=1&pageSize=${this.props.pagesize}`
  let data=await fetch(url)
+ this.setState({loading:true})
+
  let parseData=await data.json();
-//  console.log(parseData)
-this.setState({articles:parseData.articles,totalResults:parseData.totalResults})
+ //  console.log(parseData)
+ this.setState({articles:parseData.articles,
+  totalResults:parseData.totalResults,
+  loading:false})
 }
 
 prevClick= async ()=>{
-  let url=`https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=c2cffc376cf841fda2e39392378a1c2e&page=${this.state.page-1}&pageSize=20`
+  let url=`https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=c2cffc376cf841fda2e39392378a1c2e&page=${this.state.page-1}&pageSize=${this.props.pagesize}`
   let data=await fetch(url)
+  this.setState({loading:true})
+
   let parseData=await data.json();
- this.setState({
+  this.setState({
    articles:parseData.articles,
-   page:this.state.page-1
- })
+   page:this.state.page-1,
+   loading:false
+  })
 }
 nextClick= async ()=>{
-  if(this.state.page+1>Math.ceil(this.state.totalResults/20)){
-
+  if(this.state.page+1>Math.ceil(this.state.totalResults/this.props.pagesize)){
+    
   }
   else{  
-      let url=`https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=c2cffc376cf841fda2e39392378a1c2e&page=${this.state.page+1}&pageSize=20`
+      let url=`https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=c2cffc376cf841fda2e39392378a1c2e&page=${this.state.page+1}&pageSize=${this.props.pagesize}`
       let data=await fetch(url)
+      this.setState({loading:true})
       let parseData=await data.json();
       // console.log(parseData)
       this.setState({
-      page:this.state.page+1,
-      articles:parseData.articles
+        page:this.state.page+1,
+        articles:parseData.articles,
+        loading:false
  })
 }
 }
   render() {
+
        return (
-      <div className='container my-3'>
+         <div className='container my-3'>
           <h3>Welcome To news Monkey</h3>
+          
           <div className="row ">
-            {
-            this.state.articles.map(element=>{
+          <div className='text-center spinner'>
+          {this.state.loading && <Spinner />}
+          </div>
+            {!this.state.loading && this.state.articles.map(element=>{
               return  <div className="col-md-3 my-3" key={element.url}
               
               
@@ -104,7 +119,7 @@ nextClick= async ()=>{
           </div>
             <div className="btn_flex">
               <button disabled={this.state.page<=1} type='button' className='btn btn-dark' onClick={this.prevClick}>&larr; Previous</button>
-              <button disabled={this.state.page+1>Math.ceil(this.state.totalResults/20)} type='button' className='btn btn-dark' onClick={this.nextClick}>&rarr; Next</button>
+              <button disabled={this.state.page+1>Math.ceil(this.state.totalResults/this.props.pagesize)} type='button' className='btn btn-dark' onClick={this.nextClick}>&rarr; Next</button>
             </div>
       </div>
     )
