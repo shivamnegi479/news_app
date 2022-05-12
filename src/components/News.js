@@ -2,8 +2,22 @@ import React, { Component } from 'react'
 import NewsItem from './NewsItem'
 import Spinner from './Spinner';
 import './style.css'
+import PropTypes from 'prop-types';
 
 export class News extends Component {
+  static defaultProps = {
+    country: 'in',
+    pagesize:8,
+    category:'general'
+  }
+  static propTypes = {
+    country:PropTypes.string,
+    pagesize:PropTypes.number,
+    category:PropTypes.string,
+
+
+  }
+
   articles=[
     {
         "source": {
@@ -57,7 +71,7 @@ export class News extends Component {
   }
   async componentDidMount(){
     
- let url=`https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=c2cffc376cf841fda2e39392378a1c2e&page=1&pageSize=${this.props.pagesize}`
+ let url=`https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=c2cffc376cf841fda2e39392378a1c2e&page=1&pageSize=${this.props.pagesize}`
  let data=await fetch(url)
  this.setState({loading:true})
 
@@ -69,7 +83,7 @@ export class News extends Component {
 }
 
 prevClick= async ()=>{
-  let url=`https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=c2cffc376cf841fda2e39392378a1c2e&page=${this.state.page-1}&pageSize=${this.props.pagesize}`
+  let url=`https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=c2cffc376cf841fda2e39392378a1c2e&page=${this.state.page-1}&pageSize=${this.props.pagesize}`
   let data=await fetch(url)
   this.setState({loading:true})
 
@@ -85,7 +99,7 @@ nextClick= async ()=>{
     
   }
   else{  
-      let url=`https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=c2cffc376cf841fda2e39392378a1c2e&page=${this.state.page+1}&pageSize=${this.props.pagesize}`
+      let url=`https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=c2cffc376cf841fda2e39392378a1c2e&page=${this.state.page+1}&pageSize=${this.props.pagesize}`
       let data=await fetch(url)
       this.setState({loading:true})
       let parseData=await data.json();
@@ -112,7 +126,7 @@ nextClick= async ()=>{
               
               
               >
-              <NewsItem   title={element.title.substring(0,30)} description={element.content?element.content.substring(0,80):("Demo Demo demo demo demo Demo Demo demo demo demo Demo Demo demo demo demo Demo Demo demo demo demo Demo Demo demo demo demo").substring(0,80)} imgUrl={element.urlToImage?element.urlToImage:"https://static01.nyt.com/images/2022/05/06/multimedia/06DC-Waller/06DC-Waller-facebookJumbo.jpg"} newsurl={element.url}/>
+              <NewsItem   title={element.title.substring(0,30)} description={element.content?element.content.substring(0,80):("Demo Demo demo demo demo Demo Demo demo demo demo Demo Demo demo demo demo Demo Demo demo demo demo Demo Demo demo demo demo").substring(0,80)} imgUrl={element.urlToImage?element.urlToImage:"https://www.businessinsider.in/photo/91462028/watch-astronaut-samantha-cristoforetti-creates-history-with-first-tiktok-video-from-international-space-station.jpg?imgsize=32384"} newsurl={element.url}/>
               </div>
             })}
        
