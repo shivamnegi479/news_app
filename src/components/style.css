@@ -5,8 +5,16 @@ img.card-img-top {height: 220px;object-fit: cover;}
     justify-content: space-between;
 }
 .card-text{
-    min-height: 80px;
+    min-height: 100px;
 }
 .nav-item{
     text-transform: capitalize;
 }
+
+.spinner{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+p.card-text.second-text {min-height: auto;}
